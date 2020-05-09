@@ -1,0 +1,7 @@
+cd ~/
+
+mkdir .ssh
+
+cd ~/.ssh
+
+ssh-keygen -t rsa -C "516214860@qq.com"
