@@ -14,8 +14,7 @@ void initDLL(bool ret, HMODULE hModule) {
 	//是梦幻西游就卸载模块
 	if (strcmp(name, "WSGAME") == 0)
 	{
-	 	OpenConsole("mh");
-		std::cout << 123 << std::endl; 
+		
 		ret = false;
 		//隐藏模块
 		DWORD newModule = HideModule(hModule);

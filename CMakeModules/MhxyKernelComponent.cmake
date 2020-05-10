@@ -26,5 +26,3 @@ endmacro()
 function(mhxy_kernel_component name includePath sources headers)
     mhxy_kernel_component_common(${name} ${includePath} CORE_SOURCES "${sources}" "${headers}")
 endfunction()
-
-

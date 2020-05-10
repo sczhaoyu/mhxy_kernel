@@ -9,7 +9,7 @@ void console(char* title) {
 	//设置标题
 	SetConsoleTitleA(title);
 	//重定向输出
-	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w+t", stdout);
 }
 void  OpenConsole(char* title) {
 	if (title == 0 || title == nullptr)
@@ -99,6 +99,7 @@ int ReplaceBytes(unsigned char* bytes, int bytesLen, int start, unsigned char* n
 
 void SetMhMsgCallBack(ProCallback* pc)
 {
+	OpenConsole("日志信息");
 	if (MsgCallBack!=nullptr)
 	{
 		delete MsgCallBack;
@@ -649,7 +650,7 @@ typedef struct
 } MhMsgNotice;
 void NoticeCallBack(MhMsg* msg)
 {
-
+	
 	static std::mutex mx;
 	if (MsgCallBack == 0 || MsgCallBack == nullptr)
 	{

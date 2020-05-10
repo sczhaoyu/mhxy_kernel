@@ -8,6 +8,7 @@
 #include "tlhelp32.h"
 #include"TCHAR.H"
 #include"Psapi.h"
+#include "spdlog/spdlog.h"
 using namespace std;
 typedef struct
 {
