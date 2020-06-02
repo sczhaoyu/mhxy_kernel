@@ -99,7 +99,7 @@ int ReplaceBytes(unsigned char* bytes, int bytesLen, int start, unsigned char* n
 
 void SetMhMsgCallBack(ProCallback* pc)
 {
-	OpenConsole("日志信息");
+	
 	if (MsgCallBack!=nullptr)
 	{
 		delete MsgCallBack;
@@ -568,6 +568,7 @@ HWND GetWindowHwndByPID(DWORD dwProcessID)
 }
 
 
+ 
 
 void  HexReversal(int hex, unsigned char* ret)
 {

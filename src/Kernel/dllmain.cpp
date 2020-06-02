@@ -4,17 +4,26 @@
 #include "mhxy_kernel.hpp"
 // dllmain.cpp : 定义 DLL 应用程序的入口点。
 DWORD HideModule(HMODULE hModule);
-void initDLL(bool ret, HMODULE hModule) {
 
+bool initDLL(HMODULE hModule) {
+
+	bool ret = true;
+
+	char * className = "WSGAME";
+	char name[10];
+	char owner[10];
 
 	HWND hwnd = GetWindowHwndByPID(GetCurrentProcessId());
-	char name[10];
-	//获取窗口类名
+	HWND mh_hwnd = GetWindow(hwnd, GW_OWNER);
 	GetClassNameA(hwnd, name, 10);
+	GetClassNameA(mh_hwnd, owner, 10);
 	//是梦幻西游就卸载模块
-	if (strcmp(name, "WSGAME") == 0)
+	if (strcmp(name, className) == 0|| strcmp(owner, className) == 0)
 	{
-		
+		if (strcmp(owner, className) == 0)
+		{
+			hwnd = mh_hwnd;
+		}
 		ret = false;
 		//隐藏模块
 		DWORD newModule = HideModule(hModule);
@@ -34,18 +43,18 @@ void initDLL(bool ret, HMODULE hModule) {
 		fa.ReplaceSendPkgByte = newModule + ((DWORD)ReplaceSendPkgByte - (DWORD)hModule);
 		//拷贝到内存共享区
 		memcpy(lpbase, &fa, sizeof(FuncAddrs));
-		
+
 
 	}
-	 
+	return ret;
 }
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-	bool ret = true;
+	 
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		initDLL(ret, hModule);
+		initDLL(hModule);
 		break;
 		/*case DLL_THREAD_ATTACH:
 			break;
@@ -54,7 +63,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		case DLL_PROCESS_DETACH:
 			break;*/
 	}
-	return ret;
+	return true;
 }
 
 //隐藏注入模块
@@ -73,7 +82,7 @@ DWORD HideModule(HMODULE hModule)
 		return NULL;
 	}
 	//2.拷贝到新的空间
-	memcpy(mem, (void *)hModule, pNt->OptionalHeader.SizeOfImage);
+	memcpy(mem, (void*)hModule, pNt->OptionalHeader.SizeOfImage);
 	//3.修复重定位   数据目录第6项是重定位表
 	PIMAGE_BASE_RELOCATION  rBase = (PIMAGE_BASE_RELOCATION)((DWORD)mem + pNt->OptionalHeader.DataDirectory[5].VirtualAddress);
 	DWORD n = 0;
@@ -89,7 +98,7 @@ DWORD HideModule(HMODULE hModule)
 
 	} *PRELOCATIONITEM;
 	PRELOCATIONITEM   rItem;
-	DWORD *item;
+	DWORD* item;
 	while (true)
 	{
 		if (rBase->SizeOfBlock == 0)
@@ -100,7 +109,7 @@ DWORD HideModule(HMODULE hModule)
 		{
 			if (3 == rItem[i].attr)
 			{
-				item = (DWORD *)(Base + rBase->VirtualAddress + rItem[i].value);
+				item = (DWORD*)(Base + rBase->VirtualAddress + rItem[i].value);
 				*item = (*item + offset);
 			}
 		}
